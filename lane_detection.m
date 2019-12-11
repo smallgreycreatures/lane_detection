@@ -156,5 +156,6 @@ for i = 1:size(imgs,1)/H
                 loop=loop+1;
     end
 end
+%calculate_error(left_mu_est_list(1:2,:), right_mu_est_list(1:2,:);
 
 "BOTTOM"
