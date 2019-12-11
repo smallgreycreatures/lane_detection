@@ -1,5 +1,5 @@
-close all
-clear all
+function gt = calculate_left_ground_truth()
+
 bs = [133, 131, 147, 147,147, 145, 139, 140, 143, 147];
 vs = [33.2, 32.7, 32, 32, 32, 32.1, 32.5, 32.8, 32.1, 32];
 
@@ -18,3 +18,4 @@ for i = 1:length(vs);
 end
 
 lista = [ds;thetas];
+end

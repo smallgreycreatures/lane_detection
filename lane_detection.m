@@ -1,8 +1,7 @@
 %improve image processing to extraxt the white lines
 close all;
 clear all;
-ground_truth_right = [];
-ground_truth_left = [];
+
 imgs = [];
 for k = 70:73%89
     matFilename = sprintf('images/mono_00000002%d.png', k);
