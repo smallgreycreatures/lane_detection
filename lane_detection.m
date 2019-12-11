@@ -3,7 +3,7 @@ close all;
 clear all;
 
 imgs = [];
-for k = 70:73%89
+for k = 70:79%89
     matFilename = sprintf('images/mono_00000002%d.png', k);
     img = imread(matFilename);
     H = size(img,1);
@@ -156,6 +156,8 @@ for i = 1:size(imgs,1)/H
                 loop=loop+1;
     end
 end
-%calculate_error(left_mu_est_list(1:2,:), right_mu_est_list(1:2,:);
+left_gt = calculate_left_ground_truth();
+right_gt = right_lane_ground_truth();
+calculate_error(left_mu_est_list(1:2,:), right_mu_est_list(1:2,:),left_gt(:,1:size(right_mu_est_list,2)),right_gt(:,1:size(right_mu_est_list,2)));
 
 "BOTTOM"
