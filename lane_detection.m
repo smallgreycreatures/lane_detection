@@ -110,17 +110,17 @@ for i = 1:size(imgs,1)/H
         if isempty(left_lane)
             %left_lines = detect_best_lines(left_ROI,170,90,75,105);
             left_lines = line_detect(left_processed_image,0.5,20,70);
-            %draw_line(left_lane_img,left_lines, 'red');
+            all_lines_drawn_left = draw_line(left_lane_img,left_lines, 'red');
             left_lane = decide_left_or_right_lane("left",left_lines,size(I,1),top_margin, left_lane_left_margin, left_lane_right_margin );
-            %draw_line(I,left_lane,'red');
+            best_line_drawn_left = draw_line(I,left_lane,'red');
             
         end
         if isempty(right_lane)
             %right_lines = detect_best_lines(right_ROI,170,90,75,105);
             right_lines = line_detect(right_processed_image,0.5,-70,-20);
-            %draw_line(right_lane_img,right_lines, 'green');
+            all_lines_drawn_right = draw_line(right_lane_img,right_lines, 'green');
             right_lane = decide_left_or_right_lane("right",right_lines,size(I,1), top_margin, right_lane_left_margin, right_lane_right_margin );
-            %draw_line(I,right_lane, 'green');
+            best_line_drawn_right = draw_line(I,right_lane, 'green');
 
         end
 
@@ -155,6 +155,14 @@ for i = 1:size(imgs,1)/H
                     end
                 loop=loop+1;
     end
+    saveas(best_line_drawn_left, sprintf('left_lines/%d.jpg', i), 'jpg');
+    saveas(all_lines_drawn_left, sprintf('left_line/%d.jpg', i), 'jpg');
+    saveas(best_line_drawn_right, sprintf('right_lines/%d.jpg', i), 'jpg');
+    saveas(all_lines_drawn_right, sprintf('right_line/%d.jpg', i), 'jpg');
+    
+    saveas(left_processed_image, sprintf('left_ROI/%d.jpg', i), 'jpg');
+    saveas(right_processed_image, sprintf('right_ROI/%d.jpg', i), 'jpg');
+    
 end
 left_gt = calculate_left_ground_truth();
 right_gt = right_lane_ground_truth();

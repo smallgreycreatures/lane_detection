@@ -1,6 +1,6 @@
-function imge = draw_line(imge,draw_lines,colour)
+function fig = draw_line(imge,draw_lines,colour)
 %figure(1)
-figure
+fig = figure('visible', 'off');
 imshow(imge);% h = gca; h.Visible = 'On'; hold on;
 %hold on;
 
