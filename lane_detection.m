@@ -160,8 +160,8 @@ for i = 1:size(imgs,1)/H
     saveas(best_line_drawn_right, sprintf('right_lines/%d.jpg', i), 'jpg');
     saveas(all_lines_drawn_right, sprintf('right_line/%d.jpg', i), 'jpg');
     
-    saveas(left_processed_image, sprintf('left_ROI/%d.jpg', i), 'jpg');
-    saveas(right_processed_image, sprintf('right_ROI/%d.jpg', i), 'jpg');
+    imwrite(left_processed_image, fullfile('left_ROI',sprintf('%d.jpg', i)));
+    imwrite(right_processed_image, fullfile('right_ROI',sprintf('%d.jpg', i)));
     
 end
 left_gt = calculate_left_ground_truth();
