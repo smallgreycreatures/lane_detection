@@ -56,7 +56,7 @@ for i = 1:size(imgs,1)/H
     %Kalman filter constants
     dt = 1.0;
     u = [0.01;0.01];
-    acc_noise = 0.1;
+    acc_noise = 0.02;
     c_meas_noise = 0.1;
     theta_meas_noise = 0.1;
     Q = [c_meas_noise,0;0,theta_meas_noise]; %measurement prediction error
