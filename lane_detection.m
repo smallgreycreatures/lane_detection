@@ -1,5 +1,4 @@
-%gör bättre utskärning av bilderna (så det passar för de flesta dataset)
-% 
+%improve image processing to extraxt the white lines
 close all;
 clear all;
 
@@ -36,23 +35,24 @@ for i = 1:size(imgs,1)/H
 
 
     %defining region of interest Ã„NDRA
-    top_margin = size(I,1)*400/768;%pixels
-    bottom_margin = size(I,1)*680/768;%pixels
-    left_lane_left_margin = size(I,2)*50/1024;
-    left_lane_right_margin = size(I,2)*525/1024;
-    right_lane_left_margin = size(I,2)*525/1024;
-    right_lane_right_margin = size(I,2)*1000/1024;
+    top_margin = size(I,1)*0.55;%400/768;%pixels
+    bottom_margin = size(I,1)*0.85;%680/768;%pixels
+    left_lane_left_margin = 1;%size(I,2)*50/1024;
+    left_lane_right_margin = size(I,2)*0.5;%525/1024;
+    right_lane_left_margin = size(I,2)*0.5;%525/1024;
+    right_lane_right_margin = size(I,2);%*1000/1024;
     height = size(I,1);
 
     %load test image
-
     left_lane_img = I(top_margin:bottom_margin,left_lane_left_margin:left_lane_right_margin);
     right_lane_img = I(top_margin:bottom_margin,right_lane_left_margin:right_lane_right_margin);
-    %imshow(left_lane_img)
-    %figure
-    %imshow(right_lane_img)
-      %Kalman filter constants
-
+    %right_lane_img = flipdim(left_lane_img ,2); 
+%     figure
+%     imshow(left_lane_img)
+%     figure
+%     imshow(right_lane_img)
+    
+    %Kalman filter constants
     dt = 1.0;
     u = [0.01;0.01];
     acc_noise = 0.1;
@@ -69,10 +69,10 @@ for i = 1:size(imgs,1)/H
 
 
     if ~isempty(left_lane)
-      [left_mu_est,left_sigma_est] = kalman_filter_predict(A,B,u,R,left_mu,left_sigma);
+        [left_mu_est,left_sigma_est] = kalman_filter_predict(A,B,u,R,left_mu,left_sigma);
     end
     if ~isempty(right_lane)
-       [right_mu_est, right_sigma_est] = kalman_filter_predict(A,B,u,R,right_mu,right_sigma);
+        [right_mu_est, right_sigma_est] = kalman_filter_predict(A,B,u,R,right_mu,right_sigma);
     end
 
     loop = 1;
@@ -82,16 +82,23 @@ for i = 1:size(imgs,1)/H
     while (isempty(right_lane) || isempty(left_lane))
         left_processed_image = image_processing(left_lane_img);
         right_processed_image = image_processing(right_lane_img);
-
+%         figure
+%         imshow(left_processed_image)
+%         figure
+%         imshow(right_processed_image)
         
         %Elimination of Background based on Kalman Filtering
         if ~isempty(left_mu_est) && loop == 1
             left_processed_image = extract_ROI(left_processed_image,size(left_processed_image,2),size(left_processed_image,1),top_margin,left_lane_left_margin,height,left_mu_est,prediction_error_tolerance,'left');
-            %imshow(left_processed_image)
+            figure
+            imshow(left_processed_image)
+            title("left processed image")
         end
         if ~isempty(right_mu_est) && loop == 1
-             right_processed_image = extract_ROI(right_processed_image,size(right_processed_image,2),size(right_processed_image,1),top_margin,right_lane_right_margin,height,right_mu_est,prediction_error_tolerance,'right');
-             %imshow(right_processed_image)
+            right_processed_image = extract_ROI(right_processed_image,size(right_processed_image,2),size(right_processed_image,1),top_margin,right_lane_left_margin,height,right_mu_est,prediction_error_tolerance,'right');
+            figure
+            imshow(right_processed_image)
+            title("right processed image")
         end
 
 		
@@ -100,15 +107,15 @@ for i = 1:size(imgs,1)/H
         if isempty(left_lane)
             %left_lines = detect_best_lines(left_ROI,170,90,75,105);
             left_lines = line_detect(left_processed_image,0.5,20,70);
-            draw_line(left_lane_img,left_lines, 'red');
-            left_lane = decide_left_or_right_lane("left",left_lines,size(I,1),top_margin, left_lane_left_margin, left_lane_right_margin )
+             draw_line(left_lane_img,left_lines, 'red');
+            left_lane = decide_left_or_right_lane("left",left_lines,size(I,1),top_margin, left_lane_left_margin, left_lane_right_margin );
             %draw_line(I,left_lane,'red');
             
         end
         if isempty(right_lane)
             %right_lines = detect_best_lines(right_ROI,170,90,75,105);
             right_lines = line_detect(right_processed_image,0.5,-70,-20);
-            draw_line(right_lane_img,right_lines, 'green');
+             draw_line(right_lane_img,right_lines, 'green');
             right_lane = decide_left_or_right_lane("right",right_lines,size(I,1), top_margin, right_lane_left_margin, right_lane_right_margin );
             %draw_line(I,right_lane, 'green');
 
@@ -146,3 +153,5 @@ for i = 1:size(imgs,1)/H
                 loop=loop+1;
     end
 end
+
+"BOTTOM"

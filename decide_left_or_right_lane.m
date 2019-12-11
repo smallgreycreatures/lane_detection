@@ -46,7 +46,7 @@ def decide_lanes(left_or_right,lines,height,top_margin,left_margin,right_margin)
             rho = lines(i, 5);
             theta = lines(i, 6);
 			intersection = intersect_2(x1,y1,x2,y2,height,top_margin,left_margin);
-			if theta < pi && theta > pi/2 %the angle of right lane is assumed to be between 180 and 90 degrees
+			if theta < 0 && theta > -pi/2 %the angle of right lane is assumed to be between 180 and 90 degrees
 				score = (angle_weight*theta)+ (-1*dist_weight * (intersection - left_margin)); %lower the distance from center of two lanes, higher the score, steeper the line higher the score
 				if score > lane_score %the line with highest score is the right lane
 					lane_score = score;
