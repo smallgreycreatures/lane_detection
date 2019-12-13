@@ -11,6 +11,8 @@ for k = 70:89
     imgs = [imgs; img];
 end
 
+left_sigma = [];
+
 prediction_error_tolerance = 50; %pixels
 left_mu_est = [];
 right_mu_est = [];
@@ -81,6 +83,9 @@ for i = 1:size(imgs,1)/H
     loop = 1;
     right_lane = [];
     left_lane = [];
+    right_lane_list = [];
+    left_lane_list = [];
+    
     %find the lanes
     while (isempty(right_lane) || isempty(left_lane))
         left_processed_image = image_processing(left_lane_img);
@@ -130,10 +135,12 @@ for i = 1:size(imgs,1)/H
         if ~isempty(left_lane)
 
             [left_mu,left_sigma] = kalman_filter_update(C,Q,R,left_mu_est, left_sigma_est, [left_lane(6);left_lane(5)] );
+            left_lane_list = 
         end
         if ~isempty(right_lane)
 
             [right_mu,right_sigma] = kalman_filter_update(C,Q,R,right_mu_est, right_sigma_est, [right_lane(6);right_lane(5)]);
+            right_lane_list = [right_lane_list]
         end
 
                     if(loop >2)

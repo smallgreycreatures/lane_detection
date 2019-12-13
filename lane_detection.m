@@ -83,6 +83,9 @@ for i = 1:size(imgs,1)/H
     loop = 1;
     right_lane = [];
     left_lane = [];
+    right_mu_list = [];
+    left_mu_list = [];
+    
     %find the lanes
     while (isempty(right_lane) || isempty(left_lane))
         left_processed_image = image_processing(left_lane_img);
@@ -132,10 +135,12 @@ for i = 1:size(imgs,1)/H
         if ~isempty(left_lane)
 
             [left_mu,left_sigma] = kalman_filter_update(C,Q,R,left_mu_est, left_sigma_est, [left_lane(6);left_lane(5)] );
+            left_mu_list = [left_mu_list, left_mu];
         end
         if ~isempty(right_lane)
 
             [right_mu,right_sigma] = kalman_filter_update(C,Q,R,right_mu_est, right_sigma_est, [right_lane(6);right_lane(5)]);
+            right_mu_list = [right_mu_list, right_mu];
         end
 
                     if(loop >2)
@@ -176,6 +181,7 @@ for i = 1:size(imgs,1)/H
 end
 left_gt = calculate_left_ground_truth();
 right_gt = right_lane_ground_truth();
-calculate_error(left_mu_est_list(1:2,:), right_mu_est_list(1:2,:),left_gt(:,1:size(right_mu_est_list,2)),right_gt(:,1:size(right_mu_est_list,2)));
+%calculate_error(left_mu_est_list(1:2,:), right_mu_est_list(1:2,:),left_gt(:,1:size(right_mu_est_list,2)),right_gt(:,1:size(right_mu_est_list,2)));
+calculate_error(left_mu_list(1:2,:), right_mu_list(1:2,:),left_gt(:,1:size(right_mu_list,2)),right_gt(:,1:size(right_mu_list,2)));
 
 "BOTTOM"
