@@ -11,6 +11,8 @@ for k = 70:89
     imgs = [imgs; img];
 end
 
+left_sigma = [];
+
 prediction_error_tolerance = 50; %pixels
 left_mu_est = [];
 right_mu_est = [];
@@ -55,16 +57,16 @@ for i = 1:size(imgs,1)/H
     
     %Kalman filter constants
     dt = 1.0;
-    u = [0.01;0.01];
+    u = [0;0];
     acc_noise = 0.02;
-    c_meas_noise = 0.1;
-    theta_meas_noise = 0.1;
-    Q = [c_meas_noise,0;0,theta_meas_noise]; %measurement prediction error
-    R = acc_noise*[dt^4/4,0,dt^3/2,0; 0, dt^4/4,0,dt^3/2;dt^3/2,0,dt^2,0; 0, dt^3/2,0,dt^2]; % state prediction error
+    x1_measurement_noise = 0.1;
+    theta_measurement_noise = 0.1;
+    Q = [x1_measurement_noise,0;0,theta_measurement_noise]; %measurement prediction error
+    R = acc_noise*[1,0,1,0; 0, 1,0,1;1,0,1,0; 0, 1,0,1]; % state prediction error
 
     %state and measurement equations
     A = [1,0,dt,0; 0,1,0,dt; 0,0,1,0; 0,0,0,1];
-    B = [dt^2/2,0;0,dt^2/2;dt,0; 0, dt];
+    B = [0,0;0,0;0,0;0,0];
     C = [1,0,0,0; 0,1,0,0];
 
 
@@ -158,18 +160,18 @@ for i = 1:size(imgs,1)/H
                     end
                 loop=loop+1;
     end
-    saveas(best_line_drawn_left, sprintf('left_line/%d.jpg', i), 'jpg');
-    saveas(all_lines_drawn_left, sprintf('left_lines/%d.jpg', i), 'jpg');
-    saveas(best_line_drawn_right, sprintf('right_line/%d.jpg', i), 'jpg');
-    saveas(all_lines_drawn_right, sprintf('right_lines/%d.jpg', i), 'jpg');
+    %saveas(best_line_drawn_left, sprintf('left_line/%d.jpg', i), 'jpg');
+    %saveas(all_lines_drawn_left, sprintf('left_lines/%d.jpg', i), 'jpg');
+    %saveas(best_line_drawn_right, sprintf('right_line/%d.jpg', i), 'jpg');
+    %saveas(all_lines_drawn_right, sprintf('right_lines/%d.jpg', i), 'jpg');
     
     
-    saveas(both_line_drawn, sprintf('both_line/%d.jpg', i), 'jpg');
+    %saveas(both_line_drawn, sprintf('both_line/%d.jpg', i), 'jpg');
     %saveas(both_lines_drawn, sprintf('both_lines/%d.jpg', i), 'jpg');
 
     
-    imwrite(left_processed_image, fullfile('left_ROI',sprintf('%d.jpg', i)));
-    imwrite(right_processed_image, fullfile('right_ROI',sprintf('%d.jpg', i)));
+    %imwrite(left_processed_image, fullfile('left_ROI',sprintf('%d.jpg', i)));
+    %imwrite(right_processed_image, fullfile('right_ROI',sprintf('%d.jpg', i)));
     
 end
 left_gt = calculate_left_ground_truth();
