@@ -3,7 +3,7 @@ close all;
 clear all;
 
 imgs = [];
-for k = 70:79%89
+for k = 70:89
     matFilename = sprintf('images/mono_00000002%d.png', k);
     img = imread(matFilename);
     H = size(img,1);
@@ -121,6 +121,9 @@ for i = 1:size(imgs,1)/H
             all_lines_drawn_right = draw_line(right_lane_img,right_lines, 'green');
             right_lane = decide_left_or_right_lane("right",right_lines,size(I,1), top_margin, right_lane_left_margin, right_lane_right_margin );
             best_line_drawn_right = draw_line(I,right_lane, 'green');
+             
+            %both_lines_drawn = draw_line2(I,left_lines, right_lines, 'green', 'red');
+            both_line_drawn = draw_line2(I,left_lane, right_lane, 'green', 'red');
 
         end
 
@@ -155,10 +158,15 @@ for i = 1:size(imgs,1)/H
                     end
                 loop=loop+1;
     end
-    saveas(best_line_drawn_left, sprintf('left_lines/%d.jpg', i), 'jpg');
-    saveas(all_lines_drawn_left, sprintf('left_line/%d.jpg', i), 'jpg');
-    saveas(best_line_drawn_right, sprintf('right_lines/%d.jpg', i), 'jpg');
-    saveas(all_lines_drawn_right, sprintf('right_line/%d.jpg', i), 'jpg');
+    saveas(best_line_drawn_left, sprintf('left_line/%d.jpg', i), 'jpg');
+    saveas(all_lines_drawn_left, sprintf('left_lines/%d.jpg', i), 'jpg');
+    saveas(best_line_drawn_right, sprintf('right_line/%d.jpg', i), 'jpg');
+    saveas(all_lines_drawn_right, sprintf('right_lines/%d.jpg', i), 'jpg');
+    
+    
+    saveas(both_line_drawn, sprintf('both_line/%d.jpg', i), 'jpg');
+    %saveas(both_lines_drawn, sprintf('both_lines/%d.jpg', i), 'jpg');
+
     
     imwrite(left_processed_image, fullfile('left_ROI',sprintf('%d.jpg', i)));
     imwrite(right_processed_image, fullfile('right_ROI',sprintf('%d.jpg', i)));
