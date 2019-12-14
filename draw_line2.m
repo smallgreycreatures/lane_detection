@@ -9,7 +9,7 @@ for i = 1:size(line1,1)
     x2 = line1(i,3);
     y2 = line1(i,4);
     
-    line([x1,x2], [y1,y2], 'Color', colour1);
+    line([x1,x2], [y1,y2], 'Color', colour1, 'LineWidth', 1.5);
 end
 
 for i = 1:size(line2,1)
@@ -18,7 +18,7 @@ for i = 1:size(line2,1)
     x2 = line2(i,3);
     y2 = line2(i,4);
     
-    line([x1,x2], [y1,y2], 'Color', colour2);
+    line([x1,x2], [y1,y2], 'Color', colour2, 'LineWidth', 1.5);
 end
  
  

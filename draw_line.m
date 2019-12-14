@@ -11,7 +11,7 @@ for i = 1:size(draw_lines,1)
     x2 = draw_lines(i,3);
     y2 = draw_lines(i,4);
     
-    line([x1,x2], [y1,y2], 'Color', colour);
+    line([x1,x2], [y1,y2], 'Color', colour, 'LineWidth', 1.5);
     
     %figure()
     %line([x1,x2], [y1,y2], 'Color', colour);
