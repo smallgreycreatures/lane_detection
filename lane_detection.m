@@ -5,9 +5,9 @@
 close all;
 clear all;
 
-plot_it = 0;
+plot_it = 1;
 calculate_error = 0;
-t_max = 10;
+t_max = 1;
 times = [];
 
 Is = [];
