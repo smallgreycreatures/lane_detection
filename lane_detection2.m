@@ -2,7 +2,10 @@
 close all;
 clear all;
 
-plot_it = 1;
+plot_it = 0;
+calculate_error = 0;
+t_max = 10;
+times = [];
 
 Is = [];
 for k = 70:89
@@ -29,7 +32,7 @@ right_mu_est_list =[];
 left_mu_list = [];
 right_mu_list = [];
 
-%defining region of interest ÄNDRA
+%defining region of interest ï¿½NDRA
 top_margin = size(I,1)*0.55;
 bottom_margin = size(I,1)*0.85;
 left_lane_left_margin = 1;
@@ -38,6 +41,7 @@ right_lane_left_margin = size(I,2)*0.5;
 right_lane_right_margin = size(I,2);
 height = size(I,1);
 
+for t = 1:t_max
 tic
 
 for i = 1:size(Is,1)/height 
@@ -98,7 +102,12 @@ for i = 1:size(Is,1)/height
     
 end
 
-%calculate_error(left_mu_est_list(1:2,:), right_mu_est_list(1:2,:),left_gt(:,1:size(right_mu_est_list,2)),right_gt(:,1:size(right_mu_est_list,2)));
-calculate_error(left_mu_list(1:2,:), right_mu_list(1:2,:),left_gt(:,1:size(right_mu_list,2)),right_gt(:,1:size(right_mu_list,2)));
+if calculate_error
+    %calculate_error(left_mu_est_list(1:2,:), right_mu_est_list(1:2,:),left_gt(:,1:size(right_mu_est_list,2)),right_gt(:,1:size(right_mu_est_list,2)));
+    calculate_error(left_mu_list(1:2,:), right_mu_list(1:2,:),left_gt(:,1:size(right_mu_list,2)),right_gt(:,1:size(right_mu_list,2)));
+end
 
-toc
+times = [times,toc]
+end
+
+averagetime = sum(times)/t_max

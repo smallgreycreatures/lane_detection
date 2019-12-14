@@ -3,6 +3,9 @@ close all;
 clear all;
 
 plot_it = 0;
+calculate_error = 0;
+t_max = 10;
+times = [];
 
 Is = [];
 for k = 70:89
@@ -51,7 +54,8 @@ C = [1,0,0,0; 0,1,0,0];
 
 
 
-
+for t = 1:t_max
+    
 %the algorithm starts now!!!!
 tic
 
@@ -237,7 +241,12 @@ for i = 2:size(Is,1)/height
     
 end
 
-%calculate_error(left_mu_est_list(1:2,:), right_mu_est_list(1:2,:),left_gt(:,1:size(right_mu_est_list,2)),right_gt(:,1:size(right_mu_est_list,2)));
-calculate_error(left_mu_list(1:2,:), right_mu_list(1:2,:),left_gt(:,1:size(right_mu_list,2)),right_gt(:,1:size(right_mu_list,2)));
+if calculate_error
+    %calculate_error(left_mu_est_list(1:2,:), right_mu_est_list(1:2,:),left_gt(:,1:size(right_mu_est_list,2)),right_gt(:,1:size(right_mu_est_list,2)));
+    calculate_error(left_mu_list(1:2,:), right_mu_list(1:2,:),left_gt(:,1:size(right_mu_list,2)),right_gt(:,1:size(right_mu_list,2)));
+end
 
-toc 
+times = [times, toc] 
+end
+
+average_time = sum(times)/t_max
