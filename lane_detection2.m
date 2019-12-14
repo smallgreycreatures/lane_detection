@@ -1,4 +1,6 @@
 %improve image processing to extraxt the white lines
+%avg_time=1.1676
+% times 1.6706    1.0914    1.0960    1.1067    1.2154    1.1561    1.1388    1.1028    1.0591    1.0389
 close all;
 clear all;
 
