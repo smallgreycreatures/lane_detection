@@ -23,7 +23,10 @@ left_lane = [];
 right_lane = [];
 left_mu_est_list = [];
 right_mu_est_list =[];
+left_mu_list = [];
+right_mu_list = [];
 for i = 1:size(imgs,1)/H 
+    i
     I = imgs((i-1)*H+1:i*H,:);
     %imshow(I)
    % I = imread('images/mono_0000000270.png');
@@ -56,72 +59,18 @@ for i = 1:size(imgs,1)/H
 %     figure
 %     imshow(right_lane_img)
     
-    %Kalman filter constants
-    dt = 1.0;
-    u = [0;0];
-    acc_noise = 0.02;
-    x1_measurement_noise = 0.1;
-    theta_measurement_noise = 0.1;
-    Q = [x1_measurement_noise,0;0,theta_measurement_noise]; %measurement prediction error
-    R = acc_noise*[1,0,1,0; 0, 1,0,1;1,0,1,0; 0, 1,0,1]; % state prediction error
-
-    %state and measurement equations
-    A = [1,0,dt,0; 0,1,0,dt; 0,0,1,0; 0,0,0,1];
-    B = [0,0;0,0;0,0;0,0];
-    C = [1,0,0,0; 0,1,0,0];
 
 
-
-    if ~isempty(left_lane)
-        [left_mu_est,left_sigma_est] = kalman_filter_predict(A,B,u,R,left_mu,left_sigma);
-        left_mu_est_list = [left_mu_est_list,left_mu_est];
-    end
-    if ~isempty(right_lane)
-        [right_mu_est, right_sigma_est] = kalman_filter_predict(A,B,u,R,right_mu,right_sigma);
-        right_mu_est_list = [right_mu_est_list,right_mu_est]; 
-    end
-
-    loop = 1;
-    right_lane = [];
-    left_lane = [];
-    right_mu_list = [];
-    left_mu_list = [];
-    
-    %find the lanes
-    while (isempty(right_lane) || isempty(left_lane))
         left_processed_image = image_processing(left_lane_img);
         right_processed_image = image_processing(right_lane_img);
-%         figure
-%         imshow(left_processed_image)
-%         figure
-%         imshow(right_processed_image)
         
-        %Elimination of Background based on Kalman Filtering
-        if ~isempty(left_mu_est) && loop == 1
-            left_processed_image = extract_ROI(left_processed_image,size(left_processed_image,2),size(left_processed_image,1),top_margin,left_lane_left_margin,height,left_mu_est,prediction_error_tolerance,'left');
-            %figure
-            %imshow(left_processed_image)
-            %title("left processed image")
-        end
-        if ~isempty(right_mu_est) && loop == 1
-            right_processed_image = extract_ROI(right_processed_image,size(right_processed_image,2),size(right_processed_image,1),top_margin,right_lane_left_margin,height,right_mu_est,prediction_error_tolerance,'right');
-            %figure
-            %imshow(right_processed_image)
-            %title("right processed image")
-        end
-
-		
-
-        
-        if isempty(left_lane)
             %left_lines = detect_best_lines(left_ROI,170,90,75,105);
             left_lines = line_detect(left_processed_image,0.5,20,70);
 %             all_lines_drawn_left = draw_line(left_lane_img,left_lines, 'red');
             left_lane = decide_left_or_right_lane("left",left_lines,size(I,1),top_margin, left_lane_left_margin, left_lane_right_margin );
 %             best_line_drawn_left = draw_line(I,left_lane,'red');
             
-        end
-        if isempty(right_lane)
+        
             %right_lines = detect_best_lines(right_ROI,170,90,75,105);
             right_lines = line_detect(right_processed_image,0.5,-70,-20);
 %             all_lines_drawn_right = draw_line(right_lane_img,right_lines, 'green');
@@ -130,42 +79,14 @@ for i = 1:size(imgs,1)/H
              
             %both_lines_drawn = draw_line2(I,left_lines, right_lines, 'green', 'red');
 %             both_line_drawn = draw_line2(I,left_lane, right_lane, 'green', 'red');
-
-        end
-
-        if ~isempty(left_lane)
-
-            [left_mu,left_sigma] = kalman_filter_update(C,Q,R,left_mu_est, left_sigma_est, [left_lane(6);left_lane(5)] );
-            left_mu_list = [left_mu_list, left_mu];
-        end
-        if ~isempty(right_lane)
-
-            [right_mu,right_sigma] = kalman_filter_update(C,Q,R,right_mu_est, right_sigma_est, [right_lane(6);right_lane(5)]);
-            right_mu_list = [right_mu_list, right_mu];
-        end
-
-                    if(loop >2)
-                        if isempty(left_lane)
-                            x1 = left_mu_est(1,1);
-                            y1 = height;
-                            x2 = 0;
-                            y2 = height+(left_mu_est(1,1)/tan(left_mu_est(2,1)));
-                            theta = left_mu_est(2,1);
-                            intersect = left_mu_est(1,1);
-                            left_lane = [x1,y1,x2,y2,theta,intersect];
-                        end
-                        if isempty(right_lane)
-                            x1 = right_mu_est(1,1);
-                            y1 = height;
-                            x2 = 0;
-                            y2 = height+(right_mu_est(1,1)/tan(right_mu_est(2,1)));
-                            theta = right_mu_est(2,1);
-                            intersect = right_mu_est(1,1);
-                            right_lane = [x1,y1,x2,y2,theta,intersect];
-                        end
-                    end
-                loop=loop+1;
+    if ~isempty(left_lane)
+        left_mu_list = [left_mu_list, [left_lane(6);left_lane(5)]];
+    else
+        left_mu_list = [left_mu_list, left_mu_list(end)];
     end
+    
+    right_mu_list = [right_mu_list, [right_lane(6);right_lane(5)]];
+   
     %saveas(best_line_drawn_left, sprintf('left_line/%d.jpg', i), 'jpg');
     %saveas(all_lines_drawn_left, sprintf('left_lines/%d.jpg', i), 'jpg');
     %saveas(best_line_drawn_right, sprintf('right_line/%d.jpg', i), 'jpg');
