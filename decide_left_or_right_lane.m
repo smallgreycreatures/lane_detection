@@ -1,17 +1,5 @@
 function lane = decide_left_or_right_lane(left_or_right,lines,height, top_margin, left_margin, right_margin )
-%{
-#function to determine the left and right lanes from a set of lines
-def decide_lanes(left_or_right,lines,height,top_margin,left_margin,right_margin):
-	'''
-	decide_lanes(left_or_right,lines,height,top_margin,left_margin,right_margin) function is used to detect the left and right lanes out of all the lines detected. it uses a weighted score of distance between y intercept and mid point along with the steepness of the line to determine the lanes.
-	input:  left_or_right - string, the choice of line which is to be detected i.e. "left"/"right"
-		lines - list, a list of all input lines
-		height - integer, heightof the image in pixels
-		top_margin, left_margin, right_margin - integers, the top, left and right margins of the region of interest in pixels
-	output:
-		lane - list, has the structure [x1,y1,x2,y2,theta,intercept_with the bottom of the image]
-	'''
-	%}
+
 	dist_weight = 2;  	
 	angle_weight = 10;
 	lane_score = -100000000;

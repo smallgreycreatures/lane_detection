@@ -5,8 +5,8 @@
 close all;
 clear all;
 
-plot_it = 1;
-calculate_error = 0;
+plot_it = 0;
+calculate_error_bool = 1;
 t_max = 1;
 times = [];
 
@@ -31,6 +31,8 @@ left_gt = calculate_left_ground_truth();
 right_gt = right_lane_ground_truth();
 
 left_sigma = [];
+left_sigmas = [];
+right_sigmas = [];
 prediction_error_tolerance = 50; %pixels
 left_mu_est = [];
 right_mu_est = [];
@@ -213,9 +215,29 @@ for i = 2:size(Is,1)/height
 %Kalman update
     [left_mu,left_sigma] = kalman_filter_update(C,Q,R,left_mu_est, left_sigma_est, [left_lane(6);left_lane(5)] );
     left_mu_list = [left_mu_list, left_mu];
-
+    left_sigmas = [left_sigmas, norm(left_sigma)];
     [right_mu,right_sigma] = kalman_filter_update(C,Q,R,right_mu_est, right_sigma_est, [right_lane(6);right_lane(5)]);
     right_mu_list = [right_mu_list, right_mu];
+    
+    right_sigmas= [right_sigmas,norm(right_sigma)];
+    if i == 15
+        x1 = [-3:.1:3];
+        x2 = [-3:.1:3];
+        [X1,X2] = meshgrid(x1,x2);
+        X = [X1(:) X2(:)];
+        s = [right_sigma(1,1),right_sigma(1,3);right_sigma(3,1),right_sigma(3,3)]'; 
+        m = [right_mu(1);right_mu(3)]';
+        %y = normpdf(x,right_mu,s);
+        y = mvnpdf(X,m,s); 
+        y = reshape(y,length(x2),length(x1));
+        surf(x1,x2,y)
+caxis([min(y(:))-0.5*range(y(:)),max(y(:))])
+axis([-3 3 -3 3 0 0.4])
+xlabel('x1')
+ylabel('x2')
+zlabel('Probability Density')
+        i
+    end
     
     if plot_it == 1
         fig_both_lines_updated = draw_line2_update(I, left_mu, right_mu, 'red', 'green');
@@ -244,11 +266,14 @@ for i = 2:size(Is,1)/height
     
 end
 
-if calculate_error
+if calculate_error_bool
     %calculate_error(left_mu_est_list(1:2,:), right_mu_est_list(1:2,:),left_gt(:,1:size(right_mu_est_list,2)),right_gt(:,1:size(right_mu_est_list,2)));
     calculate_error(left_mu_list(1:2,:), right_mu_list(1:2,:),left_gt(:,1:size(right_mu_list,2)),right_gt(:,1:size(right_mu_list,2)));
 end
-
+figure;
+plot([2:20],left_sigmas)
+figure;
+plot([2:20],right_sigmas)
 times = [times, toc] 
 end
 

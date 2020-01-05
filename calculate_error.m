@@ -15,7 +15,7 @@ figure
 subplot(2,1,1)
 t = [0:1/30:size(estimated_left,2)/30-1/30];
 plot(t,each_img_error_left(1,:))
-title(sprintf('Squared error for left lane in pixels. MSE= %f pixels',average_error_left_pixel))
+title(sprintf('Squared error for left lane in pixels. MSE=%f pixels',average_error_left_pixel))
 xlabel("time [s]")
 ylabel("pixels")
 subplot(2,1,2)

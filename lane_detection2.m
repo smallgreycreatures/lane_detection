@@ -4,8 +4,8 @@
 close all;
 clear all;
 
-plot_it = 1;
-calculate_error = 0;
+plot_it = 0;
+calculate_error_bool = 1;
 t_max = 1;
 times = [];
 
@@ -104,7 +104,7 @@ for i = 1:size(Is,1)/height
     
 end
 
-if calculate_error
+if calculate_error_bool
     %calculate_error(left_mu_est_list(1:2,:), right_mu_est_list(1:2,:),left_gt(:,1:size(right_mu_est_list,2)),right_gt(:,1:size(right_mu_est_list,2)));
     calculate_error(left_mu_list(1:2,:), right_mu_list(1:2,:),left_gt(:,1:size(right_mu_list,2)),right_gt(:,1:size(right_mu_list,2)));
 end
